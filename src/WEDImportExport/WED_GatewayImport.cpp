@@ -639,7 +639,14 @@ void WED_GatewayImportDialog::FillICAOFromJSON(const string& json_string)
 		{
 			AptInfo_t cur_airport;
 			cur_airport.icao = tmp["AirportCode"].asString();
-			cur_airport.name = tmp["AirportName"].asString();
+			
+			int new_subs = tmp["AcceptedSceneryCount"].asInt()-tmp["ApprovedSceneryCount"].asInt();
+			char c[100]; 
+			if (new_subs >0)
+				sprintf(c,"Accept=%1d ",new_subs);
+			else
+				sprintf(c,"No New  ");
+			cur_airport.name = string(c) + tmp["AirportName"].asString();
 
 			//Add the current scenery object's airport code
 			mICAO_Apts.push_back(cur_airport);
