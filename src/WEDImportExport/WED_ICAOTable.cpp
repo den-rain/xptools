@@ -183,7 +183,7 @@ void	WED_ICAOTable::SelectRange(
 					int							end_y,
 					int							is_toggle)
 {
-	mSelected.clear();
+//	mSelected.clear();  allow multiple selections
 
 	int apt_id = mSorted[start_y];
 	mSelected.insert(apt_id);

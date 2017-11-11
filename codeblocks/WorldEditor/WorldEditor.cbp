@@ -161,9 +161,15 @@
 		<Unit filename="../../src/GUI/GUI_Unicode.h" />
 		<Unit filename="../../src/GUI/GUI_Window.cpp" />
 		<Unit filename="../../src/GUI/GUI_Window.h" />
+		<Unit filename="../../src/Network/HTTPClient.cpp" />
+		<Unit filename="../../src/Network/HTTPClient.h" />
+		<Unit filename="../../src/Network/XMLObject.cpp" />
+		<Unit filename="../../src/Network/XMLObject.h" />
 		<Unit filename="../../src/Network/b64.c">
 			<Option compilerVar="CC" />
 		</Unit>
+		<Unit filename="../../src/Network/curl_http.cpp" />
+		<Unit filename="../../src/Network/curl_http.h" />
 		<Unit filename="../../src/OGLE/ogle.cpp" />
 		<Unit filename="../../src/OGLE/ogle.h" />
 		<Unit filename="../../src/Obj/ObjDraw.cpp" />

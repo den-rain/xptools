@@ -421,6 +421,7 @@ WED_GatewayImportDialog::~WED_GatewayImportDialog()
 
 void WED_GatewayImportDialog::Next()
 {
+	set<int> apts;
 	switch(mPhase)
 	{
 	case imp_dialog_error:
@@ -432,6 +433,26 @@ void WED_GatewayImportDialog::Next()
 		//break; no next button here
 	case imp_dialog_choose_ICAO:
 		//Going to show versions
+	mICAO_AptProvider.GetSelection(apts);
+	if(apts.size() > 1)
+	{
+			DoUserAlert("Multiple Airports selected.\n Downloading first accepted, but not\n yet approved version for each.");
+			mVersions_VersionsSelected.clear();
+			mVersions_Vers.clear();
+			for(set<int>::iterator i = apts.begin(); i!=apts.end(); ++i)
+			{
+				AptInfo_t apt = mICAO_Apts.at(*i);
+				VerInfo_t v; 
+				v.icao = apt.icao; v.sceneryId = apt.kind_code;
+				mVersions_Vers.push_back(v);
+				mVersions_VersionsSelected.insert(mVersions_Vers.size()-1);
+				printf("Adding Scenery %s #%d %d\n", v.icao.c_str(), v.sceneryId, (int) mVersions_Vers.size()-1);
+				fflush(stdout);
+			}
+			NextVersionsDownload();
+			mPhase = imp_dialog_download_specific_version;
+	}
+	else
 		if(StartVersionsDownload())
 		{
 			mPhase = imp_dialog_download_versions;
@@ -560,7 +581,7 @@ void WED_GatewayImportDialog::TimerFired()
 						wrl->StartOperation("Import Scenery Pack");
 					
 						WED_Airport * last_imported = NULL;
-					
+						
 						//If it fails anywhere inside it will soon be destroyed
 						for (int i = 0; i < mSpecificBufs.size(); i++)
 						{
@@ -641,8 +662,8 @@ void WED_GatewayImportDialog::FillICAOFromJSON(const string& json_string)
 			cur_airport.icao = tmp["AirportCode"].asString();
 			
 			cur_airport.kind_code = 0;  // we put the scenery-ID to download in here
-			if (tmp["AcceptedSceneryCount"].asInt() > tmp["ApprovedSceneryCount"].asInt())
-//			if (tmp["AirportCode"].asString().substr(0,3) == "KHI")
+//			if (tmp["AcceptedSceneryCount"].asInt() > tmp["ApprovedSceneryCount"].asInt())
+			if (tmp["AirportCode"].asString().substr(0,3) == "KHI")
 			{
 				string cert;
 				if(!GUI_GetTempResourcePath("gateway.crt", cert))
@@ -669,7 +690,7 @@ void WED_GatewayImportDialog::FillICAOFromJSON(const string& json_string)
 				
 				WED_file_cache_response res = WED_file_cache_request_file(mCacheRequest);
 				
-				for (int i = 0; i < 10; ++i)
+				for (int i = 0; i < 5; ++i) // try downloading version info for 5sec. Should normally be enough.
 				{
 					if(res.out_status == cache_status_downloading)
 					{
@@ -677,7 +698,7 @@ void WED_GatewayImportDialog::FillICAOFromJSON(const string& json_string)
 						#if IBM
 						Sleep(1000);
 						#else
-						sleep(1);
+						sleep(1);     // really dumb, as it makes the program unresponsible during this download.
 						#endif
 						res = WED_file_cache_request_file(mCacheRequest);
 					}
@@ -699,7 +720,8 @@ void WED_GatewayImportDialog::FillICAOFromJSON(const string& json_string)
 					for (Json::ValueIterator itr = sceneryArray.begin(); itr != sceneryArray.end(); itr++)
 					{
 						Json::Value curScenery = *itr;
-						if(curScenery["Status"].asString() == "Accepted")
+						if(curScenery["Status"].asString() == "Approved")
+//						if(curScenery["Status"].asString() == "Accepted")
 						{
 							AcceptDate = curScenery.operator[]("dateAccepted").asString();
 							if (AcceptDate == "") AcceptDate = "(No date)";
@@ -758,6 +780,7 @@ void WED_GatewayImportDialog::FillVersionsFromJSON(const string& json_string)
 		
 		//!!IMPORTANT!! Use of ".operator[]" because the author of jsoncpp didn't read Scott Meyer's "Item 26: Guard against potential ambiguity"!
 		tmp.sceneryId     = curScenery.operator[]("sceneryId").asInt();
+		tmp.icao          = airport["icao"].asString();
 		tmp.isRecommended = tmp.sceneryId == airport.operator[]("recommendedSceneryId").asInt();
 		
 		tmp.parentId = curScenery.operator[]("parentId").asInt();
@@ -944,6 +967,7 @@ void WED_GatewayImportDialog::StartSpecificVersionDownload(int id)
 
 bool WED_GatewayImportDialog::NextVersionsDownload()
 {
+	
 	if(mVersions_VersionsSelected.size() == 0)
 	{
 		Stop();
@@ -952,6 +976,8 @@ bool WED_GatewayImportDialog::NextVersionsDownload()
 	std::set<int>::iterator index = mVersions_VersionsSelected.begin();
 	
 	int id = mVersions_Vers[*index].sceneryId;
+	mICAOid = mVersions_Vers[*index].icao;
+	
 	//Start the download
 	StartSpecificVersionDownload(id);
 
@@ -982,6 +1008,8 @@ WED_Airport * WED_GatewayImportDialog::ImportSpecificVersion(const string& json_
 
 	string zipString = root["scenery"]["masterZipBlob"].asString();
 	vector<char> outString = vector<char>(zipString.length());
+	
+	mICAOid = root["scenery"]["icao"].asString();
 
 	char * outP;
 	decode(&*zipString.begin(),&*zipString.end(),&*outString.begin(),&outP);
