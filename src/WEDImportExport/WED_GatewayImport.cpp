@@ -662,8 +662,7 @@ void WED_GatewayImportDialog::FillICAOFromJSON(const string& json_string)
 			cur_airport.icao = tmp["AirportCode"].asString();
 			
 			cur_airport.kind_code = 0;  // we put the scenery-ID to download in here
-//			if (tmp["AcceptedSceneryCount"].asInt() > tmp["ApprovedSceneryCount"].asInt())
-			if (tmp["AirportCode"].asString().substr(0,3) == "KHI")
+			if (tmp["AcceptedSceneryCount"].asInt() > tmp["ApprovedSceneryCount"].asInt())
 			{
 				string cert;
 				if(!GUI_GetTempResourcePath("gateway.crt", cert))
@@ -720,8 +719,7 @@ void WED_GatewayImportDialog::FillICAOFromJSON(const string& json_string)
 					for (Json::ValueIterator itr = sceneryArray.begin(); itr != sceneryArray.end(); itr++)
 					{
 						Json::Value curScenery = *itr;
-						if(curScenery["Status"].asString() == "Approved")
-//						if(curScenery["Status"].asString() == "Accepted")
+						if(curScenery["Status"].asString() == "Accepted")
 						{
 							AcceptDate = curScenery.operator[]("dateAccepted").asString();
 							if (AcceptDate == "") AcceptDate = "(No date)";
