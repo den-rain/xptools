@@ -68,7 +68,7 @@
 #include "WED_Colors.h"
 
 	//--ICAO Table------------
-	#include "WED_ICAOTable.h"
+	#include "WED_AptTable.h"
 	//------------------------//
 	//--Version Table---------
 	#include "WED_VerTable.h"
@@ -261,7 +261,7 @@ private:
 	//From the downloaded JSON, fill the ICAO table
 	void FillICAOFromJSON(const string& json_string);
 		//--ICAO Table Provider/Geometry
-		WED_ICAOTable			mICAO_AptProvider;
+		WED_AptTable			mICAO_AptProvider;
 		AptVector				mICAO_Apts;
 
 		//Sets up the ICAO table GUI and event handlers
@@ -701,6 +701,8 @@ void WED_GatewayImportDialog::FillICAOFromJSON(const string& json_string)
 						#endif
 						res = WED_file_cache_request_file(mCacheRequest);
 					}
+					else
+						break;
 				}
 				
 				string vers_info;
