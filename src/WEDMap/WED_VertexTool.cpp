@@ -793,6 +793,7 @@ void	WED_VertexTool::ControlsHandlesBy(intptr_t id, int n, const Vector2& delta,
 			case 0:
 			{
 				pt_b->SetLocation(gis_Geo,p);
+
 				IGISPoint_Bezier * snap_pt_b;
 				if ( is_snap && mSnapEntity && (mods & gui_ControlFlag))
 				if ((snap_pt_b = SAFE_CAST(IGISPoint_Bezier,mSnapEntity)) != NULL)
@@ -802,6 +803,8 @@ void	WED_VertexTool::ControlsHandlesBy(intptr_t id, int n, const Vector2& delta,
 					Point2 pnt_lo,pnt_hi;
 					bool has_lo = snap_pt_b->GetControlHandleLo(gis_Geo,pnt_lo);
 					bool has_hi = snap_pt_b->GetControlHandleHi(gis_Geo,pnt_hi);
+
+					if(p == pnt_lo || p == pnt_hi) break; //we are snapped to the ctrl handles
 
 					pt_b->SetSplit(snap_pt_b->IsSplit());
 
