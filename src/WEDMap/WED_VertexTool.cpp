@@ -798,29 +798,28 @@ void	WED_VertexTool::ControlsHandlesBy(intptr_t id, int n, const Vector2& delta,
 				if ( is_snap && mSnapEntity && (mods & gui_ControlFlag))
 				if ((snap_pt_b = SAFE_CAST(IGISPoint_Bezier,mSnapEntity)) != NULL)
 				{
-					bool want_flip = mods & gui_ShiftFlag;
+					Point2 pnt,pnt_lo,pnt_hi;
+					snap_pt_b->GetLocation(gis_Geo,pnt);
+					if(p != pnt) break; //we are snapped to the ctrl handles
 
-					Point2 pnt_lo,pnt_hi;
 					bool has_lo = snap_pt_b->GetControlHandleLo(gis_Geo,pnt_lo);
 					bool has_hi = snap_pt_b->GetControlHandleHi(gis_Geo,pnt_hi);
 
-					if(p == pnt_lo || p == pnt_hi) break; //we are snapped to the ctrl handles
-
 					pt_b->SetSplit(snap_pt_b->IsSplit());
 
-					if( !want_flip )
-					{
-						if(has_lo) pt_b->SetControlHandleLo(gis_Geo,pnt_lo);
-						else pt_b->DeleteHandleLo();
-						if(has_hi)  pt_b->SetControlHandleHi(gis_Geo,pnt_hi);
-						else pt_b->DeleteHandleHi();
-					}
-					else
+					if(mods & gui_ShiftFlag)
 					{
 						if(has_lo) pt_b->SetControlHandleHi(gis_Geo,pnt_lo);
 						else pt_b->DeleteHandleHi();
 						if(has_hi)  pt_b->SetControlHandleLo(gis_Geo,pnt_hi);
 						else pt_b->DeleteHandleLo();
+					}
+					else
+					{
+						if(has_lo) pt_b->SetControlHandleLo(gis_Geo,pnt_lo);
+						else pt_b->DeleteHandleLo();
+						if(has_hi)  pt_b->SetControlHandleHi(gis_Geo,pnt_hi);
+						else pt_b->DeleteHandleHi();
 					}
 				}
 				break;
