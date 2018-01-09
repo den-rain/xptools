@@ -99,11 +99,12 @@ void	WED_VertexTool::BeginEdit(void)
 	mIsRotate = 0;
 	mIsSymetric = 0;
 	mIsScale = 0;
+	mSnapEntity = NULL;
 	ISelection * sel = WED_GetSelect(GetResolver());
 	IOperation * op = dynamic_cast<IOperation *>(sel);
 	DebugAssert(sel != NULL && op != NULL);
 	op->StartOperation("Vertex Modification");  // can be any of - split ATC edge - move ATC edge node
-	                                 // - drag a node or modify a bezier node of any previously selected feature
+					// - drag a node or modify a bezier node of any previously selected feature
 }
 
 void	WED_VertexTool::EndEdit(void)
@@ -117,6 +118,7 @@ void	WED_VertexTool::EndEdit(void)
 	mIsSymetric = 0;
 	mIsScale = 0;
 	mIsTaxiSpin = 0;
+	mSnapEntity = NULL;
 }
 
 int		WED_VertexTool::CountEntities(void) const
@@ -775,17 +777,56 @@ void	WED_VertexTool::ControlsHandlesBy(intptr_t id, int n, const Vector2& delta,
 				}
 			}
 			switch(n) {
-			case 0:	pt_b->GetLocation(gis_Geo,p);						break;
+			case 0:	pt_b->GetLocation(gis_Geo,p);					break;
 			case 1:	if (!pt_b->GetControlHandleLo(gis_Geo,p)) n=3;	break;
 			case 2: if (!pt_b->GetControlHandleHi(gis_Geo,p)) n=3;	break;
 			}
 			io_pt += delta;
-			SnapMovePoint(io_pt,p, en);
+			bool is_snap = false;
+			GUI_KeyFlags mods = GetHost()->GetModifiersNow();
+			if (mods & gui_OptionAltFlag)
+				p = io_pt;
+			else
+				is_snap = SnapMovePoint(io_pt,p,en);
 			switch(n) {
-			case 0:	pt_b->SetLocation(gis_Geo,p);	break;
+			case 0:
+			{
+				pt_b->SetLocation(gis_Geo,p);
+
+				IGISPoint_Bezier * snap_pt_b;
+				if ( is_snap && mSnapEntity && (mods & gui_ControlFlag))
+				if ((snap_pt_b = SAFE_CAST(IGISPoint_Bezier,mSnapEntity)) != NULL)
+				{
+					Point2 pnt,pnt_lo,pnt_hi;
+					snap_pt_b->GetLocation(gis_Geo,pnt);
+					if(p != pnt) break; //we are snapped to the ctrl handles
+
+					bool has_lo = snap_pt_b->GetControlHandleLo(gis_Geo,pnt_lo);
+					bool has_hi = snap_pt_b->GetControlHandleHi(gis_Geo,pnt_hi);
+
+					pt_b->SetSplit(snap_pt_b->IsSplit());
+
+					if(mods & gui_ShiftFlag)
+					{
+						if(has_lo) pt_b->SetControlHandleHi(gis_Geo,pnt_lo);
+						else pt_b->DeleteHandleHi();
+						if(has_hi)  pt_b->SetControlHandleLo(gis_Geo,pnt_hi);
+						else pt_b->DeleteHandleLo();
+					}
+					else
+					{
+						if(has_lo) pt_b->SetControlHandleLo(gis_Geo,pnt_lo);
+						else pt_b->DeleteHandleLo();
+						if(has_hi)  pt_b->SetControlHandleHi(gis_Geo,pnt_hi);
+						else pt_b->DeleteHandleHi();
+					}
+				}
+				break;
+			}
 			case 1:	pt_b->SetControlHandleLo(gis_Geo,p);	break;
 			case 2: pt_b->SetControlHandleHi(gis_Geo,p);	break;
 			}
+
 #if 1   // redrape upon modificatoin of bezier node handles or location
 			WED_Thing * node = dynamic_cast <WED_Thing *> (en);
 			node = node->GetParent();
@@ -1187,7 +1228,8 @@ bool		WED_VertexTool::SnapMovePoint(
 	Point2	modi(ideal_track_pt);
 	double smallest_dist=9.9e9;
 	Point2	best(modi);
-	bool IsSnap = false;
+	bool    IsSnap = false;
+	mSnapEntity = NULL;
 
 	if (mSnapToGrid)
 	{
@@ -1219,6 +1261,7 @@ bool		WED_VertexTool::SnapMovePoint(
 			{
 				smallest_dist = dist;
 				best = posi;
+				mSnapEntity = mSnapCache[n].second;
 				IsSnap = true;
 			}
 		}
