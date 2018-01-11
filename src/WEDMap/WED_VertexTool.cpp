@@ -751,12 +751,13 @@ void	WED_VertexTool::ControlsHandlesBy(intptr_t id, int n, const Vector2& delta,
 	case gis_Point_Bezier:
 		if ((pt_b = SAFE_CAST(IGISPoint_Bezier,en)) != NULL)
 		{
+			GUI_KeyFlags mods = GetHost()->GetModifiersNow();
 			if (!mInEdit)
 			{
 				pt_b->GetLocation(gis_Geo,p);
 				Point2 dummy;
 				mInEdit = 1;
-				GUI_KeyFlags mods = GetHost()->GetModifiersNow();
+
 				if ((mods & gui_OptionAltFlag) && (mods & gui_ShiftFlag))
 				{
 					if (n == 1) { pt_b->SetSplit(true);	if (pt_b->GetControlHandleLo(gis_Geo,dummy))	pt_b->DeleteHandleLo(); else pt_b->SetControlHandleLo(gis_Geo,p+delta); }
@@ -783,11 +784,12 @@ void	WED_VertexTool::ControlsHandlesBy(intptr_t id, int n, const Vector2& delta,
 			}
 			io_pt += delta;
 			bool is_snap = false;
-			GUI_KeyFlags mods = GetHost()->GetModifiersNow();
+
 			if (mods & gui_OptionAltFlag)
 				p = io_pt;
 			else
-				is_snap = SnapMovePoint(io_pt,p,en);
+				is_snap = SnapMovePoint(io_pt,p, en);
+
 			switch(n) {
 			case 0:
 			{
