@@ -252,6 +252,7 @@
     <ClCompile Include="..\..\src\WEDWindows\WED_Sign_Editor.cpp" />
     <ClCompile Include="..\..\src\WEDWindows\WED_StartWindow.cpp" />
     <ClCompile Include="..\..\src\XESCore\AptIO.cpp" />
+    <ClCompile Include="..\..\src\XESCore\NavIO.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\src\DSFTools\DSF2Text.h" />
@@ -517,6 +518,7 @@
     <ClInclude Include="..\..\src\XESCore\AptDefs.h" />
     <ClInclude Include="..\..\src\XESCore\AptIO.h" />
     <ClInclude Include="..\..\src\XESCore\NavDefs.h" />
+    <ClInclude Include="..\..\src\XESCore\NavIO.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="..\..\src\WEDResources\ui_measurements.txt" />
@@ -630,6 +632,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <EnableEnhancedInstructionSet>StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
       <FloatingPointModel>Fast</FloatingPointModel>
+      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>Yes</GenerateDebugInformation>

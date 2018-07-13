@@ -798,6 +798,9 @@
     <ClCompile Include="..\..\src\WEDImportExport\WED_NavIE.cpp">
       <Filter>WEDImportExport</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\src\XESCore\NavIO.cpp">
+      <Filter>XESCore</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\src\WEDCore\WED_Application.h">
@@ -1588,6 +1591,9 @@
     </ClInclude>
     <ClInclude Include="..\..\src\WEDImportExport\WED_NavIE.h">
       <Filter>WEDImportExport</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\XESCore\NavIO.h">
+      <Filter>XESCore</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -69,7 +69,7 @@ struct NavGs_t {
     int elev;// MSL
     int freq;// KHz
     int max_range;
-    float bearing;// Associated localizer bearing in true degrees prefixed by glideslope angle
+    float angle_and_bearing;// Associated localizer bearing in true degrees prefixed by glideslope angle
     string id;
     string apt_icao;
     string icao_region;// the region code of the airport is used
@@ -116,5 +116,10 @@ struct NavIm_t {
     string name;
 };
 typedef vector<NavIm_t> NavImVector;
+
+struct NavData_t {
+    NavIlsVector ils_list;
+    NavGsVector gs_list;
+};
 
 #endif //NAVDEFS_H
