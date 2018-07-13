@@ -21,6 +21,11 @@
  *
  */
 
+ // nav
+ENUM_DOMAIN(NavAid, "Navigation Aid")
+    ENUM(nav_ils,                       "ILS", nav_ils)
+    ENUM(nav_gs,                        "GS",  nav_gs)
+
 ENUM_DOMAIN(Airport_Type, "Airport Type")
 	ENUM(type_Airport,	"Airport", apt_airport)
 	ENUM(type_Heliport,	"Heliport",apt_heliport)

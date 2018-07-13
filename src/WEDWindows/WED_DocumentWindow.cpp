@@ -31,6 +31,7 @@
 #include "GUI_Menus.h"
 #include "WED_UndoMgr.h"
 #include "WED_AptIE.h"
+#include "WED_NavIE.h"
 #include "WED_MapPane.h"
 #include "WED_TCEPane.h"
 #include "WED_PropertyPane.h"
@@ -57,7 +58,7 @@
 #include "WED_Routing.h"
 #include "WED_ToolUtils.h"
 #include "WED_Validate.h"
-
+#include "WED_NavIE.h"
 
 #if WITHNWLINK
 #include "WED_Server.h"
@@ -393,11 +394,13 @@ int	WED_DocumentWindow::HandleCommand(int command)
 #endif
 	case wed_UpdateMetadata:     WED_DoUpdateMetadata(mDocument); return 1;
 	case wed_ExportApt:		WED_DoExportApt(mDocument, mMapPane); return 1;
+    case wed_ExportNav:		WED_DoExportNavData(mDocument, mMapPane); return 1;
 	case wed_ExportPack:	WED_DoExportPack(mDocument, mMapPane); return 1;
 #if HAS_GATEWAY	
 	case wed_ExportToGateway:		WED_DoExportToGateway(mDocument); return 1;
 #endif	
 	case wed_ImportApt:		WED_DoImportApt(mDocument,mDocument->GetArchive(), mMapPane); return 1;
+    case wed_ImportNav:		WED_DoImportNavData(mDocument,mDocument->GetArchive(), mMapPane); return 1;
 	case wed_ImportDSF:		WED_DoImportDSF(mDocument); return 1;
 	case wed_ImportOrtho:
 		mMapPane->Map_HandleCommand(command);
@@ -513,11 +516,13 @@ int	WED_DocumentWindow::CanHandleCommand(int command, string& ioName, int& ioChe
 #endif
 
 	case wed_ExportApt:		return WED_CanExportApt(mDocument);
+    case wed_ExportNav:		return WED_CanExportNavData(mDocument);
 	case wed_ExportPack:	return WED_CanExportPack(mDocument);
 #if HAS_GATEWAY	
 	case wed_ExportToGateway:	return WED_CanExportToGateway(mDocument);
 #endif	
 	case wed_ImportApt:		return WED_CanImportApt(mDocument);
+    case wed_ImportNav:		return WED_CanImportNavData(mDocument);
 	case wed_ImportDSF:		return WED_CanImportApt(mDocument);
 	case wed_ImportOrtho:	return 1;
 #if HAS_GATEWAY

@@ -795,6 +795,9 @@
     <ClCompile Include="..\..\src\WEDCore\WED_ValidateList.cpp">
       <Filter>WEDCore</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\src\WEDImportExport\WED_NavIE.cpp">
+      <Filter>WEDImportExport</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\src\WEDCore\WED_Application.h">
@@ -1579,6 +1582,12 @@
     </ClInclude>
     <ClInclude Include="..\..\src\WEDCore\WED_ValidateList.h">
       <Filter>WEDCore</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\XESCore\NavDefs.h">
+      <Filter>XESCore</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\WEDImportExport\WED_NavIE.h">
+      <Filter>WEDImportExport</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

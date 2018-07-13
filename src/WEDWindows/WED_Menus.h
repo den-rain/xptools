@@ -39,6 +39,8 @@ enum {
 	wed_Validate,
 	wed_ImportApt,
 	wed_ExportApt,
+    wed_ImportNav,
+    wed_ExportNav,
 	wed_ExportPack,
 #if HAS_GATEWAY	
 	wed_ExportToGateway,

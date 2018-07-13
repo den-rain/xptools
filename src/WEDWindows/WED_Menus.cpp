@@ -51,6 +51,7 @@ static const GUI_MenuItem_t	kFileMenu[] = {
 {	"Target X-Plane Version",0,		0,								0,	0					},
 {	"-",					0,		0,								0,	0					},
 {	"&Import apt.dat...",	'I',	gui_ControlFlag+gui_ShiftFlag,	0,	wed_ImportApt		},
+{	"Import nav.dat...",	0,	    0,                           	0,	wed_ImportNav		},
 {	"Import DS&F...",		0,		0,								0,	wed_ImportDSF		},
 {	"Import Ortho&photo...", 0,		0,								0,	wed_ImportOrtho		},
 #if HAS_GATEWAY
@@ -61,6 +62,7 @@ static const GUI_MenuItem_t	kFileMenu[] = {
 #endif
 {	"-",					0,		0,								0,	0					},
 {	"&Export apt.dat...",	'S',	gui_ControlFlag+gui_ShiftFlag,	0,	wed_ExportApt		},
+{	"Export user_nav.dat...",	0,	0,	                            0,	wed_ExportNav		},
 {	"Export Scenery Pac&k",	'B',	gui_ControlFlag,				0,	wed_ExportPack		},
 #if HAS_GATEWAY
 {	"Export to Airport Scenery Gateway...",0,	0,							0,	wed_ExportToGateway	},
